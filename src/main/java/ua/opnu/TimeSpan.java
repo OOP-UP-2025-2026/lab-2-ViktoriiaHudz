@@ -1,43 +1,46 @@
 package ua.opnu;
 
-
 public class TimeSpan {
     // TODO: add class fields
+    private static final int MINUTES_PER_HOUR = 60;
+
     private int hours;
     private int minutes;
 
     TimeSpan(int hours, int minutes) {
         // TODO: write constructor body
-        if (hours < 0 || minutes < 0 || minutes > 59) {
-            throw new IllegalArgumentException("Invalid time values");
+        if (hours < 0 || minutes < 0 || minutes >= MINUTES_PER_HOUR) {
+            this.hours = 0;
+            this.minutes = 0;
+            return;
         }
+
         this.hours = hours;
         this.minutes = minutes;
     }
 
-
     int getHours() {
-        return hours;
+        // TODO: write method body
+        return this.hours;
     }
 
     int getMinutes() {
         // TODO: write method body
-        return minutes;
+        return this.minutes;
     }
 
     void add(int hours, int minutes) {
         // TODO: write method body
-        if (hours < 0 || minutes < 0 || minutes > 59) {
-            return;
-        }
-        int totalMinutes = this.minutes + minutes;
-        this.hours += hours + totalMinutes / 60;
-        this.minutes = totalMinutes % 60;
-    }
+        if (hours < 0 || minutes < 0 || minutes >= MINUTES_PER_HOUR) return;
 
+        int total = getTotalMinutes() + (hours * MINUTES_PER_HOUR + minutes);
+        this.hours = total / MINUTES_PER_HOUR;
+        this.minutes = total % MINUTES_PER_HOUR;
+    }
 
     void addTimeSpan(TimeSpan timespan) {
         // TODO: write method body
+        if (timespan == null) return;
         add(timespan.getHours(), timespan.getMinutes());
     }
 
@@ -48,29 +51,31 @@ public class TimeSpan {
 
     int getTotalMinutes() {
         // TODO: write method body
-        return hours * 60 + minutes;
+        return hours * MINUTES_PER_HOUR + minutes;
     }
 
     void subtract(TimeSpan span) {
         // TODO: write method body
-        int totalCurrent = this.getTotalMinutes();
-        int totalSubtract = span.getTotalMinutes();
+        if (span == null) return;
 
-        if (totalSubtract > totalCurrent) {
-            throw new IllegalArgumentException("Cannot subtract larger timespan");
+        int totalThis = getTotalMinutes();
+        int totalOther = span.getTotalMinutes();
+
+        if (totalOther > totalThis) {
+            return;
         }
 
-        int result = totalCurrent - totalSubtract;
-        this.hours = result / 60;
-        this.minutes = result % 60;
+        int result = totalThis - totalOther;
+        this.hours = result / MINUTES_PER_HOUR;
+        this.minutes = result % MINUTES_PER_HOUR;
     }
-
 
     void scale(int factor) {
         // TODO: write method body
         if (factor <= 0) return;
-        int totalMinutes = getTotalMinutes() * factor;
-        this.hours = totalMinutes / 60;
-        this.minutes = totalMinutes % 60;
+
+        int total = getTotalMinutes() * factor;
+        this.hours = total / MINUTES_PER_HOUR;
+        this.minutes = total % MINUTES_PER_HOUR;
     }
 }
